@@ -1,0 +1,50 @@
+<!DOCTYPE web-app PUBLIC
+ "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+ "http://java.sun.com/dtd/web-app_2_3.dtd" >
+
+<web-app>
+	<display-name>Archetype Created Web Application</display-name>
+
+
+
+	<servlet>
+		<servlet-name>jersey-serlvet</servlet-name>
+		<servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
+		<init-param>
+			<param-name>jersey.config.server.provider.packages</param-name>
+			<param-value>
+				com.myshare.rest.service;
+			</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>jersey-serlvet</servlet-name>
+		<url-pattern>/rest/*</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>startup</servlet-name>
+		<servlet-class>com.myshare.servlet.socket.StartUp</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>startup</servlet-name>
+		<url-pattern>/StartUp</url-pattern>
+	</servlet-mapping>
+	
+		
+	<filter>
+		<filter-name>CORS</filter-name>
+		<filter-class>com.thetransactioncompany.cors.CORSFilter</filter-class>
+		<init-param>
+            <param-name>cors.configurationFile </param-name>
+            <param-value>cors.properties</param-value>
+        </init-param>
+	</filter>
+	<filter-mapping>
+        <filter-name>CORS</filter-name>
+        <servlet-name>jersey-serlvet</servlet-name>
+	</filter-mapping>
+	
+</web-app>

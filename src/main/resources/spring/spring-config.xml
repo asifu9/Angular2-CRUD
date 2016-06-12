@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mongo="http://www.springframework.org/schema/data/mongo"
+	xmlns:camel="http://camel.apache.org/schema/spring"
+	xsi:schemaLocation="http://camel.apache.org/schema/spring
+       	  http://camel.apache.org/schema/spring/camel-spring.xsd
+		   http://www.springframework.org/schema/context
+          http://www.springframework.org/schema/context/spring-context.xsd
+          http://www.springframework.org/schema/data/mongo 
+          http://www.springframework.org/schema/data/mongo/spring-mongo.xsd
+          http://www.springframework.org/schema/beans
+          http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+    <bean class="com.myshare.spring.AppContext" />
+    <!--  <mongo:mongo-client id="mongo" host="msi-vmpqagrcintelligencecs1" port="27017" credentials="username:password@DBName"> --><!-- With credentials -->
+    <mongo:mongo-client id="mongo" host="localhost" port="27017">
+    	<mongo:client-options write-concern="JOURNAL_SAFE"
+    	 connections-per-host="100"/>
+  	</mongo:mongo-client>
+	<bean id="mongoDbFactory" class="org.springframework.data.mongodb.core.SimpleMongoDbFactory">
+		<constructor-arg name="databaseName" value="share" />
+		<constructor-arg name="mongo" ref="mongo" />
+	</bean>	
+	<bean id="mappingContext" class="org.springframework.data.mongodb.core.mapping.MongoMappingContext"/>
+
+	<bean id="converter" class="org.springframework.data.mongodb.core.convert.MappingMongoConverter">
+		<constructor-arg name="mongoDbFactory" ref="mongoDbFactory" />
+		<constructor-arg name="mappingContext" ref="mappingContext" />
+	</bean>		
+	<bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
+		<constructor-arg name="mongoDbFactory" ref="mongoDbFactory" />
+	</bean>
+	<bean id="mongoDBHelper" class="com.myshare.mongoutil.MongoHelperImpl" factory-method="getInstance">
+		<constructor-arg name="mongoTemplate" ref="mongoTemplate" />
+		<constructor-arg name="dbFactory" ref="mongoDbFactory" />
+		<constructor-arg name="converter" ref="converter" />
+	</bean> 
+	<bean id="springBeanRegistry" class="com.myshare.spring.SpringBeanRegistry" factory-method="getInstance">
+		<property name="dbHelper" ref="mongoDBHelper"/>	
+	</bean>
+    
+
+</beans>

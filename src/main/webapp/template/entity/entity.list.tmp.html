@@ -1,0 +1,31 @@
+
+<table class="table table-striped">
+	<thead>
+		<tr>
+			<th>Entity Name</th>
+			<th>Status</th>
+			<th>Update</th>
+			<th>Delete</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr *ngFor="let ent of entities"  [class.clicked]="selectedentity===ent">
+			<td>
+				{{ent.name}}
+			</td>
+			<td>
+				{{ent.isActive}}
+			</td>
+			<td>
+				<button (click)="editEntityObject(ent.Id)"> Update</button>
+			</td>
+			<td>
+				<button  (click)="deleteEntity(ent)" >Delete</button>
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+
+
+
